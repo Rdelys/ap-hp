@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DemandeController;
+use App\Http\Controllers\FileTraitementController;
 
 Route::get('/', fn () => redirect()->route('login'));
 
@@ -46,4 +47,8 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/demandes/{demande}', [DemandeController::class, 'show'])
     ->middleware('auth')->name('demandes.show');
+
+    Route::middleware('role:operateur_titulaire,relecteur_valideur,admin_titulaire')->group(function () {
+    Route::get('/file-traitement', [FileTraitementController::class, 'index'])->name('file-traitement.index');
+});
 });

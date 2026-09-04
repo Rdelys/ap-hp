@@ -42,6 +42,14 @@ class NavigationComposer
             return $count > 0 ? $count : null;
         }
 
+        if ($type === 'demandes_urgentes') {
+            $count = Demande::whereNotIn('statut', ['restitue'])
+                ->where('niveau_urgence', 'urgent')
+                ->count();
+
+            return $count > 0 ? $count : null;
+        }
+
         return null;
     }
 }

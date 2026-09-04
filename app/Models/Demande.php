@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use App\Support\CalculateurSla;
 
 class Demande extends Model
 {
@@ -29,7 +30,6 @@ class Demande extends Model
         });
     }
 
-    /** SLA contractuel — art. 4-II-4 du CCTP lot 3. */
     public function calculerEcheanceSla(): \Carbon\Carbon
     {
         $heures = match ($this->niveau_urgence) {
@@ -38,7 +38,13 @@ class Demande extends Model
             default => 24,
         };
 
-        return now()->addHours($heures); // NB: passer en jours/heures ouvrables lors du Sprint 2
+        return CalculateurSla::echeance(now(), $heures);
+    }
+
+    /** Une demande est en retard si l'échéance est dépassée et qu'elle n'a pas encore été restituée. */
+    public function estEnRetard(): bool
+    {
+        return $this->echeance_sla && $this->echeance_sla->isPast() && $this->statut !== 'restitue';
     }
 
     public function etablissement()

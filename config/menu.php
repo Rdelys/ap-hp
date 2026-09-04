@@ -25,11 +25,10 @@ return [
     ],
     [
         'label' => 'File de traitement',
-        'route' => null,
+        'route' => 'file-traitement.index',
         'roles' => ['operateur_titulaire', 'relecteur_valideur', 'admin_titulaire'],
-        'disponible' => false,
-        'sprint' => 2,
-        'badge' => null,
+        'disponible' => true,
+        'badge' => 'demandes_urgentes',
     ],
     [
         'label' => 'Transcription',
