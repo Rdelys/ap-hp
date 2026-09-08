@@ -39,10 +39,10 @@ return [
     ],
     [
         'label' => 'Relecture & contrôle qualité',
-        'route' => null,
+        'route' => 'relecture.index',
         'roles' => ['relecteur_valideur'],
-        'disponible' => false,
-        'sprint' => 4,
+        'disponible' => true,
+        'sprint' => null,
         'badge' => null,
     ],
     [

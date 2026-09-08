@@ -14,10 +14,11 @@ class TranscriptionController extends Controller
     /** Liste des dossiers disponibles pour transcription (statut en_file). */
     public function index()
     {
-        $demandes = Demande::where('statut', 'en_file')
-            ->orWhere(function ($q) {
-                $q->where('statut', 'en_transcription')
-                  ->where('operateur_id', auth()->id());
+        $demandes = Demande::where(function ($q) {
+                $q->whereIn('statut', ['depose', 'en_file', 'renvoye_correction'])
+                ->orWhere(function ($q2) {
+                    $q2->where('statut', 'en_transcription')->where('operateur_id', auth()->id());
+                });
             })
             ->orderByRaw("FIELD(niveau_urgence, 'urgent', 'normal', 'economique')")
             ->orderBy('echeance_sla')
@@ -26,16 +27,16 @@ class TranscriptionController extends Controller
 
         return view('transcription.index', compact('demandes'));
     }
-
+    
     /** Ouvre le poste de transcription pour un dossier donné. */
     public function edit(Demande $demande)
     {
-        if (! in_array($demande->statut, ['en_file', 'en_transcription'])) {
+        if (! in_array($demande->statut, ['en_file', 'en_transcription', 'renvoye_correction'])) {
             abort(403, "Ce dossier n'est plus disponible pour transcription.");
         }
 
-        if ($demande->statut === 'en_file') {
-            $demande->update(['statut' => 'en_transcription']);
+        if (in_array($demande->statut, ['en_file', 'renvoye_correction'])) {
+            $demande->update(['statut' => 'en_transcription', 'operateur_id' => auth()->id()]);
             JournalAudit::tracer('debut_transcription', $demande, ['operateur' => auth()->user()->name]);
         }
 

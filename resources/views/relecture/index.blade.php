@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
-@section('titre', 'Transcription')
-@section('sprint-actuel', 'Transcription (Sprint 3)')
+@section('titre', 'Relecture & contrôle qualité')
+@section('sprint-actuel', 'Relecture & contrôle qualité (Sprint 4)')
 
 @section('contenu')
-    <h1 class="text-xl font-semibold mb-6">Dossiers à transcrire</h1>
+    <h1 class="text-xl font-semibold mb-6">Dossiers à relire</h1>
 
     @if (session('succes'))
         <div class="mb-4 text-sm text-black bg-gray-100 border border-black/20 rounded p-3">
@@ -36,15 +36,15 @@
                         <td class="px-4 py-2">{{ strtoupper($demande->niveau_urgence) }}</td>
                         <td class="px-4 py-2">{{ $demande->echeance_sla?->format('d/m/Y H:i') }}</td>
                         <td class="px-4 py-2">
-                            <a href="{{ route('transcription.edit', $demande) }}"
+                            <a href="{{ route('relecture.edit', $demande) }}"
                                class="bg-black text-white rounded px-3 py-1.5 text-xs hover:bg-black/80 transition">
-                                    {{ $demande->statut === 'renvoye_correction' ? 'À corriger' : ($demande->statut === 'en_transcription' ? 'Reprendre' : 'Transcrire') }}
+                                Relire
                             </a>
                         </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6" class="px-4 py-6 text-center text-black/40">Aucun dossier à transcrire.</td>
+                        <td colspan="6" class="px-4 py-6 text-center text-black/40">Aucun dossier à relire.</td>
                     </tr>
                 @endforelse
             </tbody>
