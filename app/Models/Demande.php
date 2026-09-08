@@ -66,4 +66,9 @@ class Demande extends Model
     {
         return $this->hasMany(Document::class);
     }
+
+    public function operateur()
+    {
+        return $this->belongsTo(User::class, 'operateur_id');
+    }
 }

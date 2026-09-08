@@ -32,10 +32,9 @@ return [
     ],
     [
         'label' => 'Transcription',
-        'route' => null,
+        'route' => 'transcription.index',
         'roles' => ['operateur_titulaire'],
-        'disponible' => false,
-        'sprint' => 3,
+        'disponible' => true,
         'badge' => null,
     ],
     [

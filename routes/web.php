@@ -5,6 +5,7 @@ use App\Http\Controllers\DashboardController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DemandeController;
 use App\Http\Controllers\FileTraitementController;
+use App\Http\Controllers\TranscriptionController;
 
 Route::get('/', fn () => redirect()->route('login'));
 
@@ -47,8 +48,18 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/demandes/{demande}', [DemandeController::class, 'show'])
     ->middleware('auth')->name('demandes.show');
+Route::middleware('role:operateur_titulaire')->group(function () {
+    Route::get('/transcription', [TranscriptionController::class, 'index'])->name('transcription.index');
+    Route::get('/transcription/{demande}', [TranscriptionController::class, 'edit'])->name('transcription.edit');
+    Route::get('/transcription/{demande}/audio', [TranscriptionController::class, 'audio'])->name('transcription.audio');
+    Route::post('/transcription/{demande}/sauvegarder', [TranscriptionController::class, 'sauvegarder'])->name('transcription.sauvegarder');
+    Route::post('/transcription/{demande}/assister-ia', [TranscriptionController::class, 'assisterIA'])->name('transcription.assister-ia');
+    Route::post('/transcription/{demande}/terminer', [TranscriptionController::class, 'terminer'])->name('transcription.terminer');
+});
 
     Route::middleware('role:operateur_titulaire,relecteur_valideur,admin_titulaire')->group(function () {
     Route::get('/file-traitement', [FileTraitementController::class, 'index'])->name('file-traitement.index');
 });
+
 });
+
