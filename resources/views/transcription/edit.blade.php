@@ -4,6 +4,12 @@
 @section('sprint-actuel', 'Relecture & contrôle qualité')
 
 @section('contenu')
+    @if ($demande->mode_production === 'assiste')
+        <div class="mb-6 text-[13px] bg-papier-ombre border-l-2 border-encre pl-3 py-2">
+            Une transcription automatique a pré-rempli ce texte. Relisez-le intégralement avant de le transmettre —
+            aucune restitution ne peut avoir lieu sans validation humaine complète.
+        </div>
+    @endif
     <div class="flex items-start justify-between mb-8 pb-5 border-b border-ligne">
         <div>
             <h1 class="font-titre text-2xl">Relecture — {{ $demande->reference }}</h1>
