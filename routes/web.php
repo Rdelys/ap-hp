@@ -7,6 +7,7 @@ use App\Http\Controllers\DemandeController;
 use App\Http\Controllers\FileTraitementController;
 use App\Http\Controllers\TranscriptionController;
 use App\Http\Controllers\RelectureController;
+use App\Http\Controllers\ValidationController;
 
 Route::get('/', fn () => redirect()->route('login'));
 
@@ -74,6 +75,13 @@ Route::middleware('auth')->group(function () {
     // Retirez la route "audio" du groupe restreint à operateur_titulaire, placez-la ainsi :
     Route::middleware('role:operateur_titulaire,relecteur_valideur')->group(function () {
         Route::get('/transcription/{demande}/audio', [TranscriptionController::class, 'audio'])->name('transcription.audio');
+    });
+
+    Route::middleware('role:relecteur_valideur')->group(function () {
+        Route::get('/validation', [ValidationController::class, 'index'])->name('validation.index');
+        Route::get('/validation/{demande}', [ValidationController::class, 'show'])->name('validation.show');
+        Route::post('/validation/{demande}/valider', [ValidationController::class, 'valider'])->name('validation.valider');
+        Route::post('/validation/{demande}/reouvrir', [ValidationController::class, 'reouvrir'])->name('validation.reouvrir');
     });
 });
 

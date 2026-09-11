@@ -1,11 +1,11 @@
 @extends('layouts.app')
 
-@section('titre', 'Relecture & contrôle qualité')
-@section('sprint-actuel', 'Relecture & contrôle qualité')
+@section('titre', 'Validation humaine')
+@section('sprint-actuel', 'Validation humaine')
 
 @section('contenu')
     <div class="mb-8 pb-5 border-b border-ligne">
-        <h1 class="font-titre text-2xl">Dossiers à relire</h1>
+        <h1 class="font-titre text-2xl">Dossiers en attente de validation</h1>
     </div>
 
     @if (session('succes'))
@@ -19,7 +19,7 @@
                     <th class="py-3 pr-4 font-mono text-[11px] text-meta font-normal">Référence</th>
                     <th class="py-3 pr-4 font-mono text-[11px] text-meta font-normal">Établissement / Service</th>
                     <th class="py-3 pr-4 font-mono text-[11px] text-meta font-normal">Type</th>
-                    <th class="py-3 pr-4 font-mono text-[11px] text-meta font-normal">Urgence</th>
+                    <th class="py-3 pr-4 font-mono text-[11px] text-meta font-normal">Relu par</th>
                     <th class="py-3 pr-4 font-mono text-[11px] text-meta font-normal">Échéance</th>
                     <th class="py-3"></th>
                 </tr>
@@ -33,18 +33,18 @@
                             <div class="text-[12px] text-meta">{{ $demande->service->nom }}</div>
                         </td>
                         <td class="py-3 pr-4">{{ $demande->type_document }}</td>
-                        <td class="py-3 pr-4">{{ ucfirst($demande->niveau_urgence) }}</td>
+                        <td class="py-3 pr-4">{{ $demande->relecteur->name ?? '—' }}</td>
                         <td class="py-3 pr-4 font-mono text-[12.5px]">{{ $demande->echeance_sla?->format('d/m H:i') }}</td>
                         <td class="py-3 text-right">
-                            <a href="{{ route('relecture.edit', $demande) }}"
+                            <a href="{{ route('validation.show', $demande) }}"
                                class="bg-encre text-papier px-3 py-1.5 text-[12.5px] hover:bg-encre/85 transition">
-                                Relire
+                                Examiner
                             </a>
                         </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6" class="py-16 text-center text-meta">Aucun dossier à relire.</td>
+                        <td colspan="6" class="py-16 text-center text-meta">Aucun dossier en attente de validation.</td>
                     </tr>
                 @endforelse
             </tbody>

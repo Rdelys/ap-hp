@@ -1,62 +1,62 @@
 @extends('layouts.app')
 
 @section('titre', 'File de traitement')
-@section('sprint-actuel', 'Gestion des demandes & file de traitement (Sprint 2)')
+@section('sprint-actuel', 'Gestion des demandes & file de traitement')
 
 @section('contenu')
-    <h1 class="text-xl font-semibold mb-6">File de traitement</h1>
+    <div class="mb-8 pb-5 border-b border-ligne">
+        <h1 class="font-titre text-2xl">File de traitement</h1>
+        <p class="font-mono text-[12px] text-meta mt-1">{{ $demandes->total() }} dossier(s) actif(s)</p>
+    </div>
 
     <div class="overflow-x-auto">
-        <table class="w-full text-sm border border-black/10 rounded overflow-hidden">
-            <thead class="bg-black text-white text-left">
-                <tr>
-                    <th class="px-4 py-2">Référence</th>
-                    <th class="px-4 py-2">Établissement / Service</th>
-                    <th class="px-4 py-2">Type</th>
-                    <th class="px-4 py-2">Urgence</th>
-                    <th class="px-4 py-2">Statut</th>
-                    <th class="px-4 py-2">Échéance SLA</th>
-                    <th class="px-4 py-2"></th>
+        <table class="w-full text-[13.5px]">
+            <thead>
+                <tr class="border-b border-encre text-left">
+                    <th class="py-3 pr-4 font-mono text-[11px] text-meta font-normal">Référence</th>
+                    <th class="py-3 pr-4 font-mono text-[11px] text-meta font-normal">Établissement / Service</th>
+                    <th class="py-3 pr-4 font-mono text-[11px] text-meta font-normal">Type</th>
+                    <th class="py-3 pr-4 font-mono text-[11px] text-meta font-normal">Urgence</th>
+                    <th class="py-3 pr-4 font-mono text-[11px] text-meta font-normal">Statut</th>
+                    <th class="py-3 pr-4 font-mono text-[11px] text-meta font-normal">Échéance</th>
+                    <th class="py-3"></th>
                 </tr>
             </thead>
             <tbody>
                 @forelse ($demandes as $demande)
-                    <tr class="border-t border-black/10 {{ $demande->estEnRetard() ? 'bg-black/5' : '' }}">
-                        <td class="px-4 py-2 font-mono text-xs">{{ Str::limit($demande->reference, 8, '') }}</td>
-                        <td class="px-4 py-2">
+                    <tr class="border-b border-ligne hover:bg-papier-ombre/60 transition">
+                        <td class="py-3 pr-4 font-mono text-[12.5px]">{{ Str::limit($demande->reference, 8, '') }}</td>
+                        <td class="py-3 pr-4">
                             <div>{{ $demande->etablissement->nom }}</div>
-                            <div class="text-xs text-black/50">{{ $demande->service->nom }}</div>
+                            <div class="text-[12px] text-meta">{{ $demande->service->nom }}</div>
                         </td>
-                        <td class="px-4 py-2">{{ $demande->type_document }}</td>
-                        <td class="px-4 py-2">
-                            <span class="px-2 py-1 rounded text-xs border
-                                {{ $demande->niveau_urgence === 'urgent' ? 'border-black border-2 font-semibold' : 'border-black/20' }}">
-                                {{ strtoupper($demande->niveau_urgence) }}
+                        <td class="py-3 pr-4">{{ $demande->type_document }}</td>
+                        <td class="py-3 pr-4">
+                            <span class="{{ $demande->niveau_urgence === 'urgent' ? 'font-medium' : 'text-meta' }}">
+                                {{ ucfirst($demande->niveau_urgence) }}
                             </span>
                         </td>
-                        <td class="px-4 py-2">
-                            <span class="px-2 py-1 rounded text-xs border border-black/20">{{ $demande->statut }}</span>
-                        </td>
-                        <td class="px-4 py-2">
-                            {{ $demande->echeance_sla?->format('d/m/Y H:i') }}
+                        <td class="py-3 pr-4"><x-statut-dossier :statut="$demande->statut" /></td>
+                        <td class="py-3 pr-4 font-mono text-[12.5px]">
+                            {{ $demande->echeance_sla?->format('d/m H:i') }}
                             @if ($demande->estEnRetard())
-                                <div class="text-xs font-semibold mt-0.5">⚠ EN RETARD</div>
+                                <div class="text-[11px] font-medium mt-0.5">en retard</div>
                             @endif
                         </td>
-                        <td class="px-4 py-2">
-                            <a href="{{ route('demandes.show', $demande) }}" class="underline hover:no-underline">Voir</a>
+                        <td class="py-3 text-right">
+                            <a href="{{ route('demandes.show', $demande) }}" class="text-[13px] underline decoration-ligne hover:decoration-encre underline-offset-4">
+                                Ouvrir
+                            </a>
                         </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="7" class="px-4 py-6 text-center text-black/40">Aucune demande en file de traitement.</td>
+                        <td colspan="7" class="py-16 text-center text-meta">Aucune demande en file de traitement.</td>
                     </tr>
                 @endforelse
             </tbody>
         </table>
     </div>
 
-    <div class="mt-4">
-        {{ $demandes->links() }}
-    </div>
+    <div class="mt-6">{{ $demandes->links() }}</div>
 @endsection

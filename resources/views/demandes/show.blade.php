@@ -4,30 +4,41 @@
 @section('sprint-actuel', 'Dépôt & réception (Sprint 1)')
 
 @section('contenu')
-    <h1 class="text-xl font-semibold mb-2">Demande {{ $demande->reference }}</h1>
-    <p class="text-sm text-gray-500 mb-6">{{ $demande->service->nom }} — {{ $demande->etablissement->nom }}</p>
+    <a href="{{ route('demandes.index') }}" class="text-[13px] text-meta hover:text-encre transition">← Retour à la liste</a>
 
-    <div class="bg-white shadow rounded p-6 space-y-2 text-sm max-w-xl">
-        <div><strong>Type de document :</strong> {{ $demande->type_document }}</div>
-        <div><strong>Demandeur :</strong> {{ $demande->nom_demandeur ?? '—' }}</div>
-        <div><strong>Numéro de dictant :</strong> {{ $demande->numero_dictant ?? '—' }}</div>
-        <div><strong>Niveau d'urgence :</strong> {{ $demande->niveau_urgence }}</div>
-        <div><strong>Statut :</strong> {{ $demande->statut }}</div>
-        <div><strong>Échéance SLA :</strong> {{ $demande->echeance_sla?->format('d/m/Y H:i') }}</div>
-        <div><strong>Déposé par :</strong> {{ $demande->demandeur->name }}</div>
-        <div><strong>Déposé le :</strong> {{ $demande->date_depot?->format('d/m/Y H:i') }}</div>
+    <div class="mt-4 mb-8 pb-5 border-b border-ligne">
+        <h1 class="font-titre text-2xl">Dossier {{ $demande->reference }}</h1>
+        <p class="font-mono text-[12px] text-meta mt-1">{{ $demande->service->nom }} — {{ $demande->etablissement->nom }}</p>
     </div>
 
-    <h2 class="text-lg font-semibold mt-6 mb-2">Documents associés</h2>
-    <ul class="text-sm space-y-1">
-        @foreach ($demande->documents as $document)
-            <li class="bg-white shadow-sm rounded p-3">
-                [{{ $document->type }}] {{ $document->nom_fichier }} — {{ round($document->taille_octets / 1024 / 1024, 2) }} Mo
-            </li>
-        @endforeach
-    </ul>
+    <x-stepper-dossier :statut-actuel="$demande->statut" />
 
-    <a href="{{ route('demandes.index') }}" class="inline-block mt-6 underline hover:no-underline text-sm">
-        ← Retour à la liste
-    </a>
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-6 text-[13px] mb-8 pb-8 border-b border-ligne">
+        <div>
+            <div class="font-mono text-[11px] text-meta mb-1">Type de document</div>
+            <div>{{ $demande->type_document }}</div>
+        </div>
+        <div>
+            <div class="font-mono text-[11px] text-meta mb-1">Demandeur</div>
+            <div>{{ $demande->nom_demandeur ?? '—' }}</div>
+        </div>
+        <div>
+            <div class="font-mono text-[11px] text-meta mb-1">Niveau d'urgence</div>
+            <div>{{ ucfirst($demande->niveau_urgence) }}</div>
+        </div>
+        <div>
+            <div class="font-mono text-[11px] text-meta mb-1">Échéance SLA</div>
+            <div class="font-mono">{{ $demande->echeance_sla?->format('d/m/Y H:i') }}</div>
+        </div>
+    </div>
+
+    <h2 class="font-titre text-lg mb-3">Documents associés</h2>
+    <div class="space-y-px">
+        @foreach ($demande->documents as $document)
+            <div class="flex items-center justify-between border-b border-ligne py-3 text-[13.5px]">
+                <span>{{ $document->nom_fichier }}</span>
+                <span class="font-mono text-[11px] text-meta">{{ $document->type }} · {{ round($document->taille_octets / 1024 / 1024, 2) }} Mo</span>
+            </div>
+        @endforeach
+    </div>
 @endsection

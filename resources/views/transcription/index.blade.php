@@ -1,55 +1,55 @@
 @extends('layouts.app')
 
 @section('titre', 'Transcription')
-@section('sprint-actuel', 'Transcription (Sprint 3)')
+@section('sprint-actuel', 'Transcription')
 
 @section('contenu')
-    <h1 class="text-xl font-semibold mb-6">Dossiers à transcrire</h1>
+    <div class="mb-8 pb-5 border-b border-ligne">
+        <h1 class="font-titre text-2xl">Dossiers à transcrire</h1>
+    </div>
 
     @if (session('succes'))
-        <div class="mb-4 text-sm text-black bg-gray-100 border border-black/20 rounded p-3">
-            {{ session('succes') }}
-        </div>
+        <div class="mb-6 text-[13px] bg-papier-ombre border-l-2 border-encre pl-3 py-2">{{ session('succes') }}</div>
     @endif
 
     <div class="overflow-x-auto">
-        <table class="w-full text-sm border border-black/10 rounded overflow-hidden">
-            <thead class="bg-black text-white text-left">
-                <tr>
-                    <th class="px-4 py-2">Référence</th>
-                    <th class="px-4 py-2">Établissement / Service</th>
-                    <th class="px-4 py-2">Type</th>
-                    <th class="px-4 py-2">Urgence</th>
-                    <th class="px-4 py-2">Échéance</th>
-                    <th class="px-4 py-2"></th>
+        <table class="w-full text-[13.5px]">
+            <thead>
+                <tr class="border-b border-encre text-left">
+                    <th class="py-3 pr-4 font-mono text-[11px] text-meta font-normal">Référence</th>
+                    <th class="py-3 pr-4 font-mono text-[11px] text-meta font-normal">Établissement / Service</th>
+                    <th class="py-3 pr-4 font-mono text-[11px] text-meta font-normal">Type</th>
+                    <th class="py-3 pr-4 font-mono text-[11px] text-meta font-normal">Urgence</th>
+                    <th class="py-3 pr-4 font-mono text-[11px] text-meta font-normal">Échéance</th>
+                    <th class="py-3"></th>
                 </tr>
             </thead>
             <tbody>
                 @forelse ($demandes as $demande)
-                    <tr class="border-t border-black/10">
-                        <td class="px-4 py-2 font-mono text-xs">{{ Str::limit($demande->reference, 8, '') }}</td>
-                        <td class="px-4 py-2">
+                    <tr class="border-b border-ligne hover:bg-papier-ombre/60 transition">
+                        <td class="py-3 pr-4 font-mono text-[12.5px]">{{ Str::limit($demande->reference, 8, '') }}</td>
+                        <td class="py-3 pr-4">
                             <div>{{ $demande->etablissement->nom }}</div>
-                            <div class="text-xs text-black/50">{{ $demande->service->nom }}</div>
+                            <div class="text-[12px] text-meta">{{ $demande->service->nom }}</div>
                         </td>
-                        <td class="px-4 py-2">{{ $demande->type_document }}</td>
-                        <td class="px-4 py-2">{{ strtoupper($demande->niveau_urgence) }}</td>
-                        <td class="px-4 py-2">{{ $demande->echeance_sla?->format('d/m/Y H:i') }}</td>
-                        <td class="px-4 py-2">
+                        <td class="py-3 pr-4">{{ $demande->type_document }}</td>
+                        <td class="py-3 pr-4">{{ ucfirst($demande->niveau_urgence) }}</td>
+                        <td class="py-3 pr-4 font-mono text-[12.5px]">{{ $demande->echeance_sla?->format('d/m H:i') }}</td>
+                        <td class="py-3 text-right">
                             <a href="{{ route('transcription.edit', $demande) }}"
-                               class="bg-black text-white rounded px-3 py-1.5 text-xs hover:bg-black/80 transition">
-                                    {{ $demande->statut === 'renvoye_correction' ? 'À corriger' : ($demande->statut === 'en_transcription' ? 'Reprendre' : 'Transcrire') }}
+                               class="bg-encre text-papier px-3 py-1.5 text-[12.5px] hover:bg-encre/85 transition">
+                                {{ $demande->statut === 'renvoye_correction' ? 'À corriger' : ($demande->statut === 'en_transcription' ? 'Reprendre' : 'Transcrire') }}
                             </a>
                         </td>
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="6" class="px-4 py-6 text-center text-black/40">Aucun dossier à transcrire.</td>
+                        <td colspan="6" class="py-16 text-center text-meta">Aucun dossier à transcrire.</td>
                     </tr>
                 @endforelse
             </tbody>
         </table>
     </div>
 
-    <div class="mt-4">{{ $demandes->links() }}</div>
+    <div class="mt-6">{{ $demandes->links() }}</div>
 @endsection

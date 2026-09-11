@@ -47,10 +47,10 @@ return [
     ],
     [
         'label' => 'Validation',
-        'route' => null,
+        'route' => 'validation.index',
         'roles' => ['relecteur_valideur'],
-        'disponible' => false,
-        'sprint' => 5,
+        'disponible' => true,
+        'sprint' => null,
         'badge' => null,
     ],
     [

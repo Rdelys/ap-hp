@@ -11,6 +11,7 @@ class Demande extends Model
     protected $fillable = [
         'reference', 'etablissement_id', 'service_id', 'demandeur_id',
         'operateur_id', 'relecteur_id', 'relu_le',
+        'valide_par_id', 'valide_le', 'verrouille',
         'type_document', 'nom_demandeur', 'numero_dictant',
         'niveau_urgence', 'statut', 'mode_production',
         'date_depot', 'echeance_sla', 'date_restitution', 'signalement_anomalie',
@@ -21,6 +22,8 @@ class Demande extends Model
         'echeance_sla' => 'datetime',
         'date_restitution' => 'datetime',
         'relu_le' => 'datetime',
+        'valide_le' => 'datetime',
+        'verrouille' => 'boolean',
     ];
 
     protected static function booted(): void
@@ -30,8 +33,17 @@ class Demande extends Model
             $demande->date_depot ??= now();
             $demande->echeance_sla ??= $demande->calculerEcheanceSla();
         });
-    }
 
+        static::updating(function (Demande $demande) {
+            if ($demande->isDirty('statut') && $demande->statut === 'restitue') {
+                if (! $demande->valide_par_id || ! $demande->valide_le || ! $demande->verrouille) {
+                    throw new \RuntimeException(
+                        "Impossible de restituer le dossier {$demande->reference} : validation humaine manquante ou incomplète."
+                    );
+                }
+            }
+        });
+    }
     public function calculerEcheanceSla(): \Carbon\Carbon
     {
         $heures = match ($this->niveau_urgence) {
@@ -77,5 +89,10 @@ class Demande extends Model
     public function relecteur()
     {
         return $this->belongsTo(User::class, 'relecteur_id');
+    }
+
+    public function valideur()
+    {
+        return $this->belongsTo(User::class, 'valide_par_id');
     }
 }

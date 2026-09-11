@@ -26,6 +26,10 @@ class RelectureController extends Controller
             abort(403, "Ce dossier n'est pas (ou plus) en relecture.");
         }
 
+        if ($demande->verrouille) {
+            abort(403, "Ce dossier est verrouillé suite à validation humaine. Une réouverture tracée est nécessaire.");
+        }
+
         $audio = $demande->documents()->where('type', 'audio_source')->first();
         $transcription = $demande->documents()->where('type', 'transcription')->latest('version')->first();
 
@@ -43,6 +47,10 @@ class RelectureController extends Controller
             'texte' => ['required', 'string'],
         ]);
 
+        if ($demande->verrouille) {
+            abort(403, "Ce dossier est verrouillé suite à validation humaine. Une réouverture tracée est nécessaire.");
+        }
+
         $this->enregistrerVersion($demande, $validated['texte']);
 
         JournalAudit::tracer('sauvegarde_relecture', $demande);
@@ -58,6 +66,10 @@ class RelectureController extends Controller
             'signalement_anomalie' => ['nullable', 'string', 'max:2000'],
         ]);
 
+        if ($demande->verrouille) {
+            abort(403, "Ce dossier est verrouillé suite à validation humaine. Une réouverture tracée est nécessaire.");
+        }
+        
         $this->enregistrerVersion($demande, $validated['texte']);
 
         $demande->update([
