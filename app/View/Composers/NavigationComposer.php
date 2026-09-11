@@ -34,22 +34,45 @@ class NavigationComposer
 
     private function resolveBadge(?string $type, $user): ?int
     {
-        if ($type === 'demandes_en_attente' && $user->service_id) {
-            $count = Demande::where('service_id', $user->service_id)
-                ->where('statut', 'depose')
-                ->count();
+        return match ($type) {
+            'mes_demandes' => $this->compter(
+                Demande::where('service_id', $user->service_id)
+                    ->whereNotIn('statut', ['restitue'])
+            ),
 
-            return $count > 0 ? $count : null;
-        }
+            'file_traitement' => $this->compter(
+                Demande::whereNotIn('statut', ['restitue'])
+            ),
 
-        if ($type === 'demandes_urgentes') {
-            $count = Demande::whereNotIn('statut', ['restitue'])
-                ->where('niveau_urgence', 'urgent')
-                ->count();
+            'a_transcrire' => $this->compter(
+                Demande::where(function ($q) use ($user) {
+                    $q->whereIn('statut', ['en_file', 'renvoye_correction'])
+                      ->orWhere(function ($q2) use ($user) {
+                          $q2->where('statut', 'en_transcription')->where('operateur_id', $user->id);
+                      });
+                })
+            ),
 
-            return $count > 0 ? $count : null;
-        }
+            'a_relire' => $this->compter(
+                Demande::where('statut', 'en_relecture')
+            ),
 
-        return null;
+            'a_valider' => $this->compter(
+                Demande::where('statut', 'en_validation')
+            ),
+
+            'a_restituer' => $this->compter(
+                Demande::where('statut', 'valide')->where('verrouille', true)
+            ),
+
+            default => null,
+        };
+    }
+
+    private function compter($query): ?int
+    {
+        $count = $query->count();
+
+        return $count > 0 ? $count : null;
     }
 }

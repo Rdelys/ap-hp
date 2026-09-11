@@ -8,6 +8,7 @@ use App\Http\Controllers\FileTraitementController;
 use App\Http\Controllers\TranscriptionController;
 use App\Http\Controllers\RelectureController;
 use App\Http\Controllers\ValidationController;
+use App\Http\Controllers\RestitutionController;
 
 Route::get('/', fn () => redirect()->route('login'));
 
@@ -82,6 +83,16 @@ Route::middleware('auth')->group(function () {
         Route::get('/validation/{demande}', [ValidationController::class, 'show'])->name('validation.show');
         Route::post('/validation/{demande}/valider', [ValidationController::class, 'valider'])->name('validation.valider');
         Route::post('/validation/{demande}/reouvrir', [ValidationController::class, 'reouvrir'])->name('validation.reouvrir');
+    });
+
+    Route::middleware('role:relecteur_valideur,admin_titulaire')->group(function () {
+    Route::get('/restitution/a-generer', [RestitutionController::class, 'aGenerer'])->name('restitution.a-generer');
+    Route::post('/restitution/{demande}/generer', [RestitutionController::class, 'generer'])->name('restitution.generer');
+    });
+
+    Route::middleware('auth')->group(function () {
+        Route::get('/restitution', [RestitutionController::class, 'index'])->name('restitution.index');
+        Route::get('/restitution/{demande}/telecharger', [RestitutionController::class, 'telecharger'])->name('restitution.telecharger');
     });
 });
 
