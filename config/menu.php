@@ -67,10 +67,10 @@ return [
     ],
     [
         'label' => 'Suivi & reporting',
-        'route' => null,
+        'route' => 'rapports.index',
         'roles' => ['admin_aphp', 'referent_service', 'admin_titulaire'],
-        'disponible' => false,
-        'sprint' => 8,
+        'disponible' => true,
+        'sprint' => null,
         'badge' => null,
     ],
     [

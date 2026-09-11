@@ -10,6 +10,7 @@ use App\Http\Controllers\RelectureController;
 use App\Http\Controllers\ValidationController;
 use App\Http\Controllers\RestitutionController;
 use App\Http\Controllers\AuditController;
+use App\Http\Controllers\RapportController;
 
 Route::get('/', fn () => redirect()->route('login'));
 
@@ -98,6 +99,11 @@ Route::middleware('auth')->group(function () {
 
     Route::middleware('role:admin_titulaire,admin_aphp')->group(function () {
         Route::get('/audit', [AuditController::class, 'index'])->name('audit.index');
+    });
+
+    Route::middleware('role:admin_aphp,referent_service,admin_titulaire')->group(function () {
+        Route::get('/rapports', [RapportController::class, 'index'])->name('rapports.index');
+        Route::get('/rapports/export', [RapportController::class, 'exporterCsv'])->name('rapports.export');
     });
 });
 
