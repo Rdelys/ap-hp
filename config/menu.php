@@ -97,5 +97,12 @@ return [
         'sprint' => 11,
         'badge' => null,
     ],
-
+    [
+        'label' => "Journal d'audit",
+        'route' => 'audit.index',
+        'roles' => ['admin_titulaire', 'admin_aphp'],
+        'disponible' => true,
+        'sprint' => null,
+        'badge' => null,
+    ],
 ];

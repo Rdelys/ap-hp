@@ -9,6 +9,7 @@ use App\Http\Controllers\TranscriptionController;
 use App\Http\Controllers\RelectureController;
 use App\Http\Controllers\ValidationController;
 use App\Http\Controllers\RestitutionController;
+use App\Http\Controllers\AuditController;
 
 Route::get('/', fn () => redirect()->route('login'));
 
@@ -93,6 +94,10 @@ Route::middleware('auth')->group(function () {
     Route::middleware('auth')->group(function () {
         Route::get('/restitution', [RestitutionController::class, 'index'])->name('restitution.index');
         Route::get('/restitution/{demande}/telecharger', [RestitutionController::class, 'telecharger'])->name('restitution.telecharger');
+    });
+
+    Route::middleware('role:admin_titulaire,admin_aphp')->group(function () {
+        Route::get('/audit', [AuditController::class, 'index'])->name('audit.index');
     });
 });
 

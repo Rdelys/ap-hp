@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class JournalAudit extends Model
 {
-    protected $table = 'journaux_audit'; // ⚠️ à ajouter — Eloquent aurait sinon cherché "journal_audits"
+    protected $table = 'journaux_audit';
 
     public $timestamps = false;
     const UPDATED_AT = null;
@@ -16,7 +16,15 @@ class JournalAudit extends Model
         'adresse_ip', 'user_agent', 'contexte',
     ];
 
-    protected $casts = ['contexte' => 'array'];
+    protected $casts = [
+        'contexte' => 'array',
+        'created_at' => 'datetime',
+    ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     public function update(array $attributes = [], array $options = []): bool
     {
