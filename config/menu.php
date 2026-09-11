@@ -105,4 +105,28 @@ return [
         'sprint' => null,
         'badge' => null,
     ],
+    [
+        'label' => 'Utilisateurs',
+        'route' => 'admin.utilisateurs.index',
+        'roles' => ['admin_titulaire'],
+        'disponible' => true,
+        'sprint' => null,
+        'badge' => null,
+    ],
+    [
+        'label' => 'Établissements',
+        'route' => 'admin.etablissements.index',
+        'roles' => ['admin_titulaire'],
+        'disponible' => true,
+        'sprint' => null,
+        'badge' => null,
+    ],
+    [
+        'label' => 'Services',
+        'route' => 'admin.services.index',
+        'roles' => ['admin_titulaire'],
+        'disponible' => true,
+        'sprint' => null,
+        'badge' => null,
+    ],
 ];

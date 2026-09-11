@@ -11,6 +11,10 @@ use App\Http\Controllers\ValidationController;
 use App\Http\Controllers\RestitutionController;
 use App\Http\Controllers\AuditController;
 use App\Http\Controllers\RapportController;
+use App\Http\Controllers\InvitationController;
+use App\Http\Controllers\Admin\UtilisateurController;
+use App\Http\Controllers\Admin\EtablissementController;
+use App\Http\Controllers\Admin\ServiceController;
 
 Route::get('/', fn () => redirect()->route('login'));
 
@@ -105,5 +109,19 @@ Route::middleware('auth')->group(function () {
         Route::get('/rapports', [RapportController::class, 'index'])->name('rapports.index');
         Route::get('/rapports/export', [RapportController::class, 'exporterCsv'])->name('rapports.export');
     });
+
+    Route::middleware(['signed'])->group(function () {
+        Route::get('/invitation/{user}', [InvitationController::class, 'formulaire'])->name('invitation.formulaire');
+        Route::post('/invitation/{user}', [InvitationController::class, 'definir'])->name('invitation.definir');
+    });
+
+    Route::middleware('role:admin_titulaire')->prefix('admin')->name('admin.')->group(function () {
+    Route::resource('utilisateurs', UtilisateurController::class)->except(['show', 'destroy']);
+    Route::post('utilisateurs/{utilisateur}/basculer-activation', [UtilisateurController::class, 'basculerActivation'])->name('utilisateurs.basculer-activation');
+    Route::post('utilisateurs/{utilisateur}/renvoyer-invitation', [UtilisateurController::class, 'renvoyerInvitation'])->name('utilisateurs.renvoyer-invitation');
+
+    Route::resource('etablissements', EtablissementController::class)->except(['show', 'destroy']);
+    Route::resource('services', ServiceController::class)->except(['show', 'destroy']);
+});
 });
 
