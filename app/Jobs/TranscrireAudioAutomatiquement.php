@@ -24,6 +24,14 @@ class TranscrireAudioAutomatiquement implements ShouldQueue
 
     public function handle(TranscripteurAutomatique $transcripteur): void
     {
+
+        if (! $gouvernance->estAutoriseePour($this->demande)) {
+            JournalAudit::tracer('transcription_automatique_bloquee', $this->demande, [
+                'motif' => "IA désactivée par gouvernance pour ce service/type de document",
+            ]);
+            return; // reste en_file, transcription manuelle requise
+        }
+        
         $audio = $this->demande->documents()->where('type', 'audio_source')->first();
 
         if (! $audio) {

@@ -8,6 +8,7 @@ use App\Models\JournalAudit;
 use App\Services\AssistantTranscriptionIA;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use App\Services\GouvernanceIA;
 
 class TranscriptionController extends Controller
 {
@@ -78,13 +79,13 @@ class TranscriptionController extends Controller
     public function assisterIA(Request $request, Demande $demande, AssistantTranscriptionIA $assistant)
     {
         $validated = $request->validate([
-            'texte' => ['required', 'string'],
+        'texte' => ['required', 'string'],
         ]);
 
-        if (! $demande->service->ia_autorisee) {
+        if (! $gouvernance->estAutoriseePour($demande)) {
             return response()->json([
                 'succes' => false,
-                'erreur' => "L'assistance IA est désactivée pour ce service par l'AP-HP.",
+                'erreur' => "L'assistance IA est désactivée pour ce type de document ou ce service par l'AP-HP.",
             ], 403);
         }
 

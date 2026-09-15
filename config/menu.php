@@ -83,10 +83,10 @@ return [
     ],
     [
         'label' => 'Gouvernance IA',
-        'route' => null,
+        'route' => 'admin.gouvernance-ia.index',
         'roles' => ['admin_aphp', 'admin_titulaire'],
-        'disponible' => false,
-        'sprint' => 10,
+        'disponible' => true,
+        'sprint' => null,
         'badge' => null,
     ],
     [

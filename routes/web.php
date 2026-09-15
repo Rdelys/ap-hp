@@ -15,6 +15,7 @@ use App\Http\Controllers\InvitationController;
 use App\Http\Controllers\Admin\UtilisateurController;
 use App\Http\Controllers\Admin\EtablissementController;
 use App\Http\Controllers\Admin\ServiceController;
+use App\Http\Controllers\Admin\GouvernanceIAController;
 
 Route::get('/', fn () => redirect()->route('login'));
 
@@ -121,7 +122,13 @@ Route::middleware('auth')->group(function () {
     Route::post('utilisateurs/{utilisateur}/renvoyer-invitation', [UtilisateurController::class, 'renvoyerInvitation'])->name('utilisateurs.renvoyer-invitation');
 
     Route::resource('etablissements', EtablissementController::class)->except(['show', 'destroy']);
-    Route::resource('services', ServiceController::class)->except(['show', 'destroy']);
-});
+        Route::resource('services', ServiceController::class)->except(['show', 'destroy']);
+    });
+
+    Route::middleware('role:admin_aphp,admin_titulaire')->prefix('admin')->name('admin.')->group(function () {
+        Route::get('gouvernance-ia', [GouvernanceIAController::class, 'index'])->name('gouvernance-ia.index');
+        Route::post('gouvernance-ia/{service}/basculer-service', [GouvernanceIAController::class, 'basculerService'])->name('gouvernance-ia.basculer-service');
+        Route::post('gouvernance-ia/{service}/basculer-type', [GouvernanceIAController::class, 'basculerType'])->name('gouvernance-ia.basculer-type');
+    });
 });
 
