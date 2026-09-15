@@ -32,6 +32,10 @@ Route::middleware('guest')->group(function () {
 Route::post('/deconnexion', [AuthController::class, 'logout'])
     ->middleware('auth')->name('logout');
 
+Route::middleware(['signed'])->group(function () {
+    Route::get('/invitation/{user}', [InvitationController::class, 'formulaire'])->name('invitation.formulaire');
+    Route::post('/invitation/{user}', [InvitationController::class, 'definir'])->name('invitation.definir');
+});
 // --- Tableaux de bord par rôle (RBAC) ---
 Route::middleware('auth')->group(function () {
 
@@ -114,10 +118,7 @@ Route::middleware('auth')->group(function () {
         Route::get('/rapports/export', [RapportController::class, 'exporterCsv'])->name('rapports.export');
     });
 
-    Route::middleware(['signed'])->group(function () {
-        Route::get('/invitation/{user}', [InvitationController::class, 'formulaire'])->name('invitation.formulaire');
-        Route::post('/invitation/{user}', [InvitationController::class, 'definir'])->name('invitation.definir');
-    });
+
 
     Route::middleware('role:admin_titulaire')->prefix('admin')->name('admin.')->group(function () {
     Route::resource('utilisateurs', UtilisateurController::class)->except(['show', 'destroy']);
