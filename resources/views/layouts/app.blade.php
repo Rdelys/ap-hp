@@ -43,8 +43,13 @@
 
         <div class="px-6 py-6 border-b border-white/10">
             <div class="font-titre text-lg leading-none">{{ config('app.name') }}</div>
-            <div class="font-mono text-[10px] text-white/40 mt-1.5 tracking-wide">environnement de démonstration</div>
         </div>
+
+        @if (session('avertissement'))
+            <div class="bg-red-50 border-b border-red-700 text-red-800 text-center text-[12px] py-2 px-4">
+                {{ session('avertissement') }}
+            </div>
+        @endif
 
         <nav class="flex-1 overflow-y-auto px-3 py-5 space-y-0.5">
             @foreach ($menuItems as $item)
@@ -71,12 +76,16 @@
             @endforeach
         </nav>
 
+        
         @auth
             <div class="px-4 py-5 border-t border-white/10">
                 <div class="mb-3 leading-tight">
                     <div class="text-[13px] font-medium truncate">{{ auth()->user()->name }}</div>
                     <div class="font-mono text-[10px] text-white/40 mt-0.5">{{ auth()->user()->role->libelle() }}</div>
                 </div>
+                <a href="{{ route('securite.index') }}" class="block text-[12px] text-white/60 hover:text-white mb-2 transition">
+                    Sécurité du compte
+                </a>
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
                     <button type="submit"
@@ -101,15 +110,6 @@
             </button>
             <span class="ml-3 font-titre text-base">{{ config('app.name') }}</span>
         </header>
-
-        <div class="bg-papier-ombre border-b border-ligne text-center text-[12px] text-meta py-2 px-4">
-            Environnement de démonstration — développement en cours.
-            @hasSection('sprint-actuel')
-                Module actif : @yield('sprint-actuel').
-            @else
-                Le contenu évolue au fil des sprints.
-            @endif
-        </div>
 
         <main class="flex-1 px-5 md:px-12 py-10 max-w-6xl w-full mx-auto">
             @yield('contenu')

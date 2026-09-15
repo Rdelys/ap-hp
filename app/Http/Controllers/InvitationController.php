@@ -6,6 +6,7 @@ use App\Models\JournalAudit;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rules\Password;
 
 class InvitationController extends Controller
 {
@@ -25,7 +26,7 @@ class InvitationController extends Controller
         }
 
         $validated = $request->validate([
-            'password' => ['required', 'string', 'min:10', 'confirmed'],
+            'password' => ['required', 'confirmed', Password::min(10)->mixedCase()->numbers()->symbols()],
         ]);
 
         $user->update([

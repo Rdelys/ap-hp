@@ -17,6 +17,8 @@ use App\Http\Controllers\Admin\EtablissementController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\GouvernanceIAController;
 use App\Http\Controllers\TicketSupportController;
+use App\Http\Controllers\MfaController;
+use App\Http\Controllers\Auth\MfaVerificationController;
 
 Route::get('/', fn () => redirect()->route('login'));
 
@@ -141,6 +143,18 @@ Route::middleware('auth')->group(function () {
     Route::middleware('role:operateur_titulaire,relecteur_valideur,admin_titulaire,admin_aphp')->group(function () {
         Route::post('/support/{ticket}/statut', [TicketSupportController::class, 'changerStatut'])->name('support.changer-statut');
     });
+});
+
+Route::middleware('guest')->group(function () {
+    Route::get('/connexion/verification', [MfaVerificationController::class, 'formulaire'])->name('mfa.verification.formulaire');
+    Route::post('/connexion/verification', [MfaVerificationController::class, 'verifier'])->name('mfa.verification.verifier');
+});
+
+Route::middleware('auth')->prefix('securite')->name('securite.')->group(function () {
+    Route::get('/', [MfaController::class, 'index'])->name('index');
+    Route::get('/mfa/configurer', [MfaController::class, 'afficherConfiguration'])->name('mfa.configurer');
+    Route::post('/mfa/confirmer', [MfaController::class, 'confirmer'])->name('mfa.confirmer');
+    Route::post('/mfa/desactiver', [MfaController::class, 'desactiver'])->name('mfa.desactiver');
 });
 
 

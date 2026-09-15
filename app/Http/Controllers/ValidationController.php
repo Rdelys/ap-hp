@@ -33,7 +33,7 @@ class ValidationController extends Controller
         return view('validation.show', [
             'demande' => $demande,
             'audioUrl' => $audio ? route('transcription.audio', $demande) : null,
-            'texte' => $transcription ? Storage::disk('documents_prives')->get($transcription->chemin_stockage) : '',
+            'texte' => $transcription ? app(\App\Services\StockageChiffre::class)->lire($transcription->chemin_stockage) : '',
         ]);
     }
 

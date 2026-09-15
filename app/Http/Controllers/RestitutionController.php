@@ -50,7 +50,7 @@ class RestitutionController extends Controller
             abort(422, "Aucune transcription trouvée pour ce dossier.");
         }
 
-        $texte = Storage::disk('documents_prives')->get($transcription->chemin_stockage);
+        $texte = app(\App\Services\StockageChiffre::class)->lire($transcription->chemin_stockage);
         $chemin = $generateur->generer($demande, $texte);
 
         Document::create([
@@ -59,6 +59,7 @@ class RestitutionController extends Controller
             'nom_fichier' => basename($chemin),
             'chemin_stockage' => $chemin,
             'format' => 'docx',
+            'chiffre' => true,
             'taille_octets' => Storage::disk('documents_prives')->size($chemin),
             'version' => 1,
         ]);
@@ -79,7 +80,7 @@ class RestitutionController extends Controller
             ->with('succes', "Document restitué pour le dossier {$demande->reference}.");
     }
 
-    public function telecharger(Demande $demande)
+    public function telecharger(Demande $demande, \App\Services\StockageChiffre $stockage)
     {
         $this->autoriserAcces($demande);
 
@@ -91,7 +92,12 @@ class RestitutionController extends Controller
 
         JournalAudit::tracer('telechargement_document', $demande, ['fichier' => $document->nom_fichier]);
 
-        return Storage::disk('documents_prives')->download($document->chemin_stockage, $document->nom_fichier);
+        $contenu = $stockage->lire($document->chemin_stockage);
+
+        return response($contenu, 200, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'Content-Disposition' => 'attachment; filename="'.$document->nom_fichier.'"',
+        ]);
     }
 
     private function autoriserAcces(Demande $demande): void

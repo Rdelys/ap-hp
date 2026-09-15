@@ -55,7 +55,7 @@ class TranscrireAudioAutomatiquement implements ShouldQueue
         $nomFichier = $this->demande->reference.'_v1.txt';
         $chemin = 'transcriptions/'.$this->demande->reference.'/'.$nomFichier;
 
-        Storage::disk('documents_prives')->put($chemin, $resultat['texte']);
+        app(\App\Services\StockageChiffre::class)->ecrire($chemin, $resultat['texte']);
 
         Document::create([
             'demande_id' => $this->demande->id,
@@ -63,6 +63,7 @@ class TranscrireAudioAutomatiquement implements ShouldQueue
             'nom_fichier' => $nomFichier,
             'chemin_stockage' => $chemin,
             'format' => 'txt',
+            'chiffre' => true,
             'taille_octets' => strlen($resultat['texte']),
             'version' => 1,
         ]);

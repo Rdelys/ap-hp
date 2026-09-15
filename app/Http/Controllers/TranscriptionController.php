@@ -47,7 +47,7 @@ class TranscriptionController extends Controller
         return view('transcription.edit', [
             'demande' => $demande,
             'audioUrl' => $audio ? route('transcription.audio', $demande) : null,
-            'texteActuel' => $transcription ? Storage::disk('documents_prives')->get($transcription->chemin_stockage) : '',
+            'texteActuel' => $transcription ? app(\App\Services\StockageChiffre::class)->lire($transcription->chemin_stockage) : '',
         ]);
     }
 
@@ -126,7 +126,7 @@ class TranscriptionController extends Controller
         $nomFichier = $demande->reference.'_v'.($dernierNumero + 1).'.txt';
         $chemin = 'transcriptions/'.$demande->reference.'/'.$nomFichier;
 
-        Storage::disk('documents_prives')->put($chemin, $texte);
+        app(\App\Services\StockageChiffre::class)->ecrire($chemin, $texte);
 
         Document::create([
             'demande_id' => $demande->id,
@@ -134,6 +134,7 @@ class TranscriptionController extends Controller
             'nom_fichier' => $nomFichier,
             'chemin_stockage' => $chemin,
             'format' => 'txt',
+            'chiffre' => true,
             'taille_octets' => strlen($texte),
             'version' => $dernierNumero + 1,
         ]);

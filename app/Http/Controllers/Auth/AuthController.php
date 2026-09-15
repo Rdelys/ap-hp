@@ -23,7 +23,6 @@ class AuthController extends Controller
             'password' => ['required', 'string'],
         ]);
 
-        // Limitation anti-bruteforce (indépendante du verrouillage en base)
         $throttleKey = strtolower($credentials['email']).'|'.$request->ip();
 
         if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
@@ -41,7 +40,7 @@ class AuthController extends Controller
             ]);
         }
 
-        if (! Auth::attempt($credentials, $request->boolean('remember'))) {
+        if (! Auth::validate($credentials)) {
             RateLimiter::hit($throttleKey, 60);
 
             if ($user) {
@@ -53,32 +52,35 @@ class AuthController extends Controller
 
             JournalAudit::tracer('connexion_echouee', null, ['email' => $credentials['email']]);
 
-            throw ValidationException::withMessages([
-                'email' => 'Identifiants incorrects.',
-            ]);
+            throw ValidationException::withMessages(['email' => 'Identifiants incorrects.']);
         }
 
         RateLimiter::clear($throttleKey);
-        $request->session()->regenerate(); // anti session fixation
 
-        $authUser = Auth::user();
-
-        if (! $authUser->actif) {
-            Auth::logout();
-            throw ValidationException::withMessages([
-                'email' => 'Ce compte est désactivé.',
-            ]);
+        if (! $user->actif) {
+            throw ValidationException::withMessages(['email' => 'Ce compte est désactivé.']);
         }
 
-        $authUser->update([
+        // Double authentification activée : on ne connecte pas encore, on renvoie vers la vérification.
+        if ($user->two_factor_confirmed_at) {
+            $request->session()->put('mfa_user_id', $user->id);
+            $request->session()->put('mfa_remember', $request->boolean('remember'));
+
+            return redirect()->route('mfa.verification.formulaire');
+        }
+
+        Auth::login($user, $request->boolean('remember'));
+        $request->session()->regenerate();
+
+        $user->update([
             'tentatives_echouees' => 0,
             'verrouille_jusqu_a' => null,
             'derniere_connexion_at' => now(),
         ]);
 
-        JournalAudit::tracer('connexion_reussie', $authUser);
+        JournalAudit::tracer('connexion_reussie', $user);
 
-        return redirect()->route($authUser->role->routeDashboard());
+        return redirect()->route($user->role->routeDashboard());
     }
 
     public function logout(Request $request)

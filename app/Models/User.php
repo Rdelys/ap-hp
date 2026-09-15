@@ -15,10 +15,12 @@ class User extends Authenticatable
     protected $fillable = [
         'name', 'email', 'password',
         'role', 'etablissement_id', 'service_id', 'actif',
+        'mot_de_passe_defini',
+        'two_factor_secret', 'two_factor_recovery_codes', 'two_factor_confirmed_at',
     ];
 
     protected $hidden = [
-        'password', 'remember_token',
+        'password', 'remember_token', 'two_factor_secret', 'two_factor_recovery_codes',
     ];
 
     protected function casts(): array
@@ -30,6 +32,8 @@ class User extends Authenticatable
             'actif' => 'boolean',
             'derniere_connexion_at' => 'datetime',
             'verrouille_jusqu_a' => 'datetime',
+            'mot_de_passe_defini' => 'boolean',
+            'two_factor_confirmed_at' => 'datetime',
         ];
     }
 

@@ -25,27 +25,17 @@ class DatabaseSeeder extends Seeder
             'referent_email' => 'martin@aphp.fr',
         ]);
 
-        // ⚠️ Mots de passe de démo uniquement — à changer avant toute démo/prod réelle
-        $comptes = [
-            ['name' => 'Secrétariat Démo', 'email' => 'secretariat@demo.aphp', 'role' => RoleUtilisateur::SecretariatMedical],
-            ['name' => 'Référent Démo', 'email' => 'referent@demo.aphp', 'role' => RoleUtilisateur::ReferentService],
-            ['name' => 'Admin AP-HP Démo', 'email' => 'admin.aphp@demo.aphp', 'role' => RoleUtilisateur::AdminAphp],
-            ['name' => 'Opérateur Démo', 'email' => 'operateur@demo.aphp', 'role' => RoleUtilisateur::OperateurTitulaire],
-            ['name' => 'Relecteur Démo', 'email' => 'relecteur@demo.aphp', 'role' => RoleUtilisateur::RelecteurValideur],
-            ['name' => 'Admin Titulaire Démo', 'email' => 'admin.titulaire@demo.aphp', 'role' => RoleUtilisateur::AdminTitulaire],
-        ];
-
-        foreach ($comptes as $compte) {
-            User::create([
-                'name' => $compte['name'],
-                'email' => $compte['email'],
-                'password' => Hash::make('MotDePasse!Demo2026'),
-                'role' => $compte['role'],
-                'etablissement_id' => $etablissement->id,
-                'service_id' => $service->id,
-                'actif' => true,
-                'email_verified_at' => now(),
-            ]);
-        }
+        // ⚠️ Mot de passe de démo uniquement — à changer avant toute démo/prod réelle
+        User::create([
+            'name' => 'Admin Titulaire',
+            'email' => 'admin.titulaire@demo.aphp',
+            'password' => Hash::make('MotDePasse!Demo2026'),
+            'role' => RoleUtilisateur::AdminTitulaire,
+            'etablissement_id' => $etablissement->id,
+            'service_id' => $service->id,
+            'actif' => true,
+            'mot_de_passe_defini' => true,
+            'email_verified_at' => now(),
+        ]);
     }
 }

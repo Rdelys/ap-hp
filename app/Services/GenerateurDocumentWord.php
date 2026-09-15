@@ -29,7 +29,7 @@ class GenerateurDocumentWord
         $nomFichier = $this->genererNomFichier($demande);
         $cheminFinal = 'restitutions/'.$demande->reference.'/'.$nomFichier;
 
-        Storage::disk('documents_prives')->put($cheminFinal, file_get_contents($cheminTemporaire));
+        app(\App\Services\StockageChiffre::class)->ecrire($cheminFinal, file_get_contents($cheminTemporaire));
         unlink($cheminTemporaire);
 
         return $cheminFinal;

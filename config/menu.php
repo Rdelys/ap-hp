@@ -74,14 +74,6 @@ return [
         'badge' => null,
     ],
     [
-        'label' => 'Administration',
-        'route' => null,
-        'roles' => ['admin_titulaire'],
-        'disponible' => false,
-        'sprint' => 9,
-        'badge' => null,
-    ],
-    [
         'label' => 'Gouvernance IA',
         'route' => 'admin.gouvernance-ia.index',
         'roles' => ['admin_aphp', 'admin_titulaire'],
