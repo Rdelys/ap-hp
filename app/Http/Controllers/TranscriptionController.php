@@ -76,10 +76,10 @@ class TranscriptionController extends Controller
     }
 
     /** Envoie le texte courant à l'assistant IA pour correction/structuration. */
-    public function assisterIA(Request $request, Demande $demande, AssistantTranscriptionIA $assistant)
+    public function assisterIA(Request $request, Demande $demande, AssistantTranscriptionIA $assistant, GouvernanceIA $gouvernance)
     {
         $validated = $request->validate([
-        'texte' => ['required', 'string'],
+            'texte' => ['required', 'string'],
         ]);
 
         if (! $gouvernance->estAutoriseePour($demande)) {

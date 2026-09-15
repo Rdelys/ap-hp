@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('titre', 'Poste de relecture')
-@section('sprint-actuel', 'Relecture & contrôle qualité (Sprint 4)')
+@section('sprint-actuel', 'Relecture & contrôle qualité')
 
 @section('contenu')
     <div class="flex items-center justify-between mb-4">
