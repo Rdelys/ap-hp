@@ -10,13 +10,16 @@ use Illuminate\Validation\Rules\Password;
 
 class InvitationController extends Controller
 {
-    public function formulaire(User $user)
+    public function formulaire(User $user, Request $request)
     {
         if ($user->mot_de_passe_defini) {
             abort(403, 'Ce compte a déjà été activé.');
         }
 
-        return view('invitation.definir-mot-de-passe', compact('user'));
+        return view('invitation.definir-mot-de-passe', [
+            'user' => $user,
+            'urlSoumission' => $request->fullUrl(),
+        ]);
     }
 
     public function definir(Request $request, User $user)

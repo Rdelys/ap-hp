@@ -29,7 +29,7 @@
             <div class="mb-5 text-[13px] bg-papier-ombre border-l-2 border-encre pl-3 py-2">{{ $errors->first() }}</div>
         @endif
 
-        <form method="POST" action="{{ route('invitation.definir', $user) }}" class="space-y-5">
+        <form method="POST" action="{{ $urlSoumission }}" class="space-y-5">
             @csrf
             <div>
                 <label class="block text-[12px] text-meta mb-1.5">Nouveau mot de passe</label>
