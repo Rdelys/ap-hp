@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\UtilisateurController;
 use App\Http\Controllers\Admin\EtablissementController;
 use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\GouvernanceIAController;
+use App\Http\Controllers\TicketSupportController;
 
 Route::get('/', fn () => redirect()->route('login'));
 
@@ -130,5 +131,18 @@ Route::middleware('auth')->group(function () {
         Route::post('gouvernance-ia/{service}/basculer-service', [GouvernanceIAController::class, 'basculerService'])->name('gouvernance-ia.basculer-service');
         Route::post('gouvernance-ia/{service}/basculer-type', [GouvernanceIAController::class, 'basculerType'])->name('gouvernance-ia.basculer-type');
     });
+
+    Route::get('/support', [TicketSupportController::class, 'index'])->name('support.index');
+    Route::get('/support/creer', [TicketSupportController::class, 'create'])->name('support.create');
+    Route::post('/support', [TicketSupportController::class, 'store'])->name('support.store');
+    Route::get('/support/{ticket}', [TicketSupportController::class, 'show'])->name('support.show');
+    Route::post('/support/{ticket}/repondre', [TicketSupportController::class, 'repondre'])->name('support.repondre');
+    
+    Route::middleware('role:operateur_titulaire,relecteur_valideur,admin_titulaire,admin_aphp')->group(function () {
+        Route::post('/support/{ticket}/statut', [TicketSupportController::class, 'changerStatut'])->name('support.changer-statut');
+    });
 });
+
+
+
 

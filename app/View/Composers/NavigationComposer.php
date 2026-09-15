@@ -4,6 +4,7 @@ namespace App\View\Composers;
 
 use App\Models\Demande;
 use Illuminate\View\View;
+use App\Models\TicketSupport;
 
 class NavigationComposer
 {
@@ -63,6 +64,12 @@ class NavigationComposer
 
             'a_restituer' => $this->compter(
                 Demande::where('statut', 'valide')->where('verrouille', true)
+            ),
+
+            'tickets_ouverts' => $this->compter(
+                in_array($user->role->value, ['operateur_titulaire', 'relecteur_valideur', 'admin_titulaire', 'admin_aphp'], true)
+                    ? TicketSupport::whereIn('statut', ['ouvert', 'en_cours'])
+                    : TicketSupport::where('demandeur_id', $user->id)->whereIn('statut', ['ouvert', 'en_cours'])
             ),
 
             default => null,

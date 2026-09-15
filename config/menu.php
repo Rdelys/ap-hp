@@ -91,11 +91,11 @@ return [
     ],
     [
         'label' => 'Support & incidents',
-        'route' => null,
+        'route' => 'support.index',
         'roles' => ['secretariat_medical', 'referent_service', 'admin_aphp', 'operateur_titulaire', 'relecteur_valideur', 'admin_titulaire'],
-        'disponible' => false,
-        'sprint' => 11,
-        'badge' => null,
+        'disponible' => true,
+        'sprint' => null,
+        'badge' => 'tickets_ouverts',
     ],
     [
         'label' => "Journal d'audit",
